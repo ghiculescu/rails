@@ -69,7 +69,7 @@ class ActiveSupport::TestCase
     end
 
     yield.tap do
-      assert_equal expected_count, queries.size, "#{queries.size} instead of #{expected_count} queries were executed. #{queries.inspect}"
+      assert_equal expected_count, queries.size, "#{queries.size} instead of #{expected_count} queries were executed. Queries: #{queries.join("\n\n")}"
     end
   end
 

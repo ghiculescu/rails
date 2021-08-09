@@ -57,7 +57,7 @@ class ActiveStorage::VariantWithRecordTest < ActiveSupport::TestCase
     assert_equal "local_public", variant.image.blob.service_name
   end
 
-  test "eager loading is supported" do
+  test "eager loading" do
     user = User.create!(name: "Josh")
 
     blob1 = directly_upload_file_blob(filename: "racecar.jpg")
@@ -83,8 +83,11 @@ class ActiveStorage::VariantWithRecordTest < ActiveSupport::TestCase
         # attachments (vlogs) x 1
         # blob x 2
         # variant record x 2
-        user.vlogs.map do |vlog|
-          vlog.representation(resize_to_limit: [100, 100]).processed
+        user.vlogs.each do |vlog|
+          rep = vlog.representation(resize_to_limit: [100, 100])
+          rep.processed
+          rep.key
+          rep.url
         end
       end
     end
@@ -97,8 +100,11 @@ class ActiveStorage::VariantWithRecordTest < ActiveSupport::TestCase
         # attachments (vlogs) x 1
         # blob x 1
         # variant record x 1
-        user.vlogs.includes(blob: :variant_records).map do |vlog|
-          vlog.representation(resize_to_limit: [100, 100]).processed
+        user.vlogs.includes(blob: :variant_records).each do |vlog|
+          rep = vlog.representation(resize_to_limit: [100, 100])
+          rep.processed
+          rep.key
+          rep.url
         end
       end
     end
@@ -111,8 +117,11 @@ class ActiveStorage::VariantWithRecordTest < ActiveSupport::TestCase
         # attachments (vlogs) x 1
         # blob x 1
         # variant record x 1
-        user.vlogs.with_all_variant_records.map do |vlog|
-          vlog.representation(resize_to_limit: [100, 100]).processed
+        user.vlogs.with_all_variant_records.each do |vlog|
+          rep = vlog.representation(resize_to_limit: [100, 100])
+          rep.processed
+          rep.key
+          rep.url
         end
       end
     end
@@ -126,9 +135,12 @@ class ActiveStorage::VariantWithRecordTest < ActiveSupport::TestCase
         # attachments (vlogs) x 1
         # blob x 1
         # variant record x 1
-        User.where(id: user.id).with_attached_vlogs.map do |u|
+        User.where(id: user.id).with_attached_vlogs.each do |u|
           u.vlogs.map do |vlog|
-            vlog.representation(resize_to_limit: [100, 100]).processed
+            rep = vlog.representation(resize_to_limit: [100, 100])
+            rep.processed
+            rep.key
+            rep.url
           end
         end
       end
