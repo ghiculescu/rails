@@ -27,7 +27,15 @@ class ActiveStorage::VariantWithRecord
     record&.image
   end
 
-  delegate :key, :url, :download, to: :image, allow_nil: true
+  def key
+    record&.blob.key
+  end
+
+  def url
+    record&.blob.url
+  end
+
+  delegate :download, to: :image, allow_nil: true
 
   private
     def transform_blob
