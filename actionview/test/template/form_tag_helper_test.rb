@@ -88,6 +88,24 @@ class FormTagHelperTest < ActionView::TestCase
     assert_dom_equal expected, actual
   end
 
+  def test_check_box_tag_checked_kwarg_true
+    actual = check_box_tag "admin", "1", checked: true
+    expected = %(<input id="admin" checked="checked" name="admin" type="checkbox" value="1" />)
+    assert_dom_equal expected, actual
+  end
+
+  def test_check_box_tag_checked_kwarg_false
+    actual = check_box_tag "admin", "1", checked: false
+    expected = %(<input id="admin" name="admin" type="checkbox" value="1" />)
+    assert_dom_equal expected, actual
+  end
+
+  def test_check_box_tag_checked_kwarg_false_and_disabled
+    actual = check_box_tag "admin", "1", checked: false, disabled: true
+    expected = %(<input id="admin" name="admin" type="checkbox" value="1" disabled="disabled" />)
+    assert_dom_equal expected, actual
+  end
+
   def test_check_box_tag_id_sanitized
     label_elem = root_elem(check_box_tag("project[2][admin]"))
     assert_match VALID_HTML_ID, label_elem["id"]
@@ -373,6 +391,22 @@ class FormTagHelperTest < ActionView::TestCase
 
     actual = radio_button_tag("ctrlname", "apache2.2")
     expected = %(<input id="ctrlname_apache2.2" name="ctrlname" type="radio" value="apache2.2" />)
+    assert_dom_equal expected, actual
+
+    actual = radio_button_tag "people", "david", true
+    expected = %(<input id="people_david" name="people" type="radio" value="david" checked="checked" />)
+    assert_dom_equal expected, actual
+
+    actual = radio_button_tag "people", "david", checked: true
+    expected = %(<input id="people_david" name="people" type="radio" value="david" checked="checked" />)
+    assert_dom_equal expected, actual
+
+    actual = radio_button_tag "people", "david", checked: false
+    expected = %(<input id="people_david" name="people" type="radio" value="david" />)
+    assert_dom_equal expected, actual
+
+    actual = radio_button_tag "people", "david", checked: false, disabled: true
+    expected = %(<input id="people_david" name="people" type="radio" value="david" disabled="disabled" />)
     assert_dom_equal expected, actual
   end
 

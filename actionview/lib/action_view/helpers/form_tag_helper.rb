@@ -424,6 +424,7 @@ module ActionView
       #
       # ==== Options
       # * <tt>:disabled</tt> - If set to true, the user will not be able to use this input.
+      # * <tt>:checked</tt> - If set to true, the checkbox will be checked by default.
       # * Any other key creates standard HTML options for the tag.
       #
       # ==== Examples
@@ -442,8 +443,14 @@ module ActionView
       #   check_box_tag 'eula', 'accepted', false, disabled: true
       #   # => <input disabled="disabled" id="eula" name="eula" type="checkbox" value="accepted" />
       def check_box_tag(name, value = "1", checked = false, options = {})
+        if checked.is_a?(Hash) && options == {}
+          options = checked
+          checked = false
+        end
         html_options = { "type" => "checkbox", "name" => name, "id" => sanitize_to_id(name), "value" => value }.update(options.stringify_keys)
-        html_options["checked"] = "checked" if checked
+        if !html_options.key?("checked") && checked
+          html_options["checked"] = "checked"
+        end
         tag :input, html_options
       end
 
@@ -452,6 +459,7 @@ module ActionView
       #
       # ==== Options
       # * <tt>:disabled</tt> - If set to true, the user will not be able to use this input.
+      # * <tt>:checked</tt> - If set to true, the radio button will be selected by default.
       # * Any other key creates standard HTML options for the tag.
       #
       # ==== Examples
@@ -467,8 +475,14 @@ module ActionView
       #   radio_button_tag 'color', "green", true, class: "color_input"
       #   # => <input checked="checked" class="color_input" id="color_green" name="color" type="radio" value="green" />
       def radio_button_tag(name, value, checked = false, options = {})
+        if checked.is_a?(Hash) && options == {}
+          options = checked
+          checked = false
+        end
         html_options = { "type" => "radio", "name" => name, "id" => "#{sanitize_to_id(name)}_#{sanitize_to_id(value)}", "value" => value }.update(options.stringify_keys)
-        html_options["checked"] = "checked" if checked
+        if !html_options.key?("checked") && checked
+          html_options["checked"] = "checked"
+        end
         tag :input, html_options
       end
 

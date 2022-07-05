@@ -1,3 +1,17 @@
+*   `check_box_tag` and `radio_button_tag` now accept `checked` as a keyword argument
+
+    This is to make the API more consistent with the `FormHelper` variants. You can now provide `checked` as a positional or keyword argument:
+
+    ```erb
+    = check_box_tag "admin", "1", false
+    = check_box_tag "admin", "1", checked: false
+
+    = radio_button_tag 'favorite_color', 'maroon', false
+    = radio_button_tag 'favorite_color', 'maroon', checked: false
+    ```
+
+    *Alex Ghiculescu*
+
 *   Guard against `ActionView::Helpers::FormTagHelper#field_name` calls with nil
     `object_name` arguments. For example:
 
