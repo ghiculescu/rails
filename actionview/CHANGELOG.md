@@ -1,3 +1,21 @@
+*   `select` can now be called with a single hash containing options and some HTML options
+
+    Previously this would not work as expected:
+
+    ```erb
+    <%= select :post, :author, authors, required: true %>
+    ```
+
+    Instead you needed to do this:
+
+    ```erb
+    <%= select :post, :author, authors, {}, required: true %>
+    ```
+
+    Now, either form is accepted, for the following HTML attributes: `required`, `multiple`, `size`.
+
+    *Alex Ghiculescu*
+
 *   Choices of `select` can optionally contain html attributes as the last element
     of the child arrays when using grouped/nested collections
 
