@@ -1,3 +1,14 @@
+*   The `namespaced_controller` Query Log tag now matches the `controller` format
+
+    For example, a request processed by `NameSpaced::UsersController` will now log as:
+
+    ```
+    :controller # "users"
+    :namespaced_controller # "name_spaced/users"
+    ```
+
+    *Alex Ghiculescu*
+
 *   Do not write additional new lines when dumping sql migration versions
 
     This change updates the `insert_versions_sql` function so that the database insert string containing the current database migration versions does not end with two additional new lines.
