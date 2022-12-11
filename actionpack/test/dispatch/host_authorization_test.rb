@@ -364,15 +364,15 @@ class HostAuthorizationTest < ActionDispatch::IntegrationTest
   end
 
   test "sub-sub domains should not be permitted" do
-    @app = ActionDispatch::HostAuthorization.new(App, ".domain.com")
+    @app = ActionDispatch::HostAuthorization.new(App, [".githubpreview.dev", ".app.github.dev"])
 
     get "/", env: {
-      "HOST" => "secondary.sub.domain.com",
+      "HOST" => "ghiculescu-urban-lamp-asdfasdgsafda-3000.preview.app.github.dev",
       "action_dispatch.show_detailed_exceptions" => true
     }
 
     assert_response :forbidden
-    assert_match "Blocked host: secondary.sub.domain.com", response.body
+    assert_match "Blocked host", response.body
   end
 
   test "forwarded hosts are allowed when permitted" do
