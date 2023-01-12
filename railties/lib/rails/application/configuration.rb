@@ -288,6 +288,7 @@ module Rails
             active_record.raise_on_assign_to_attr_readonly = true
             active_record.belongs_to_required_validates_foreign_key = false
             active_record.before_committed_on_all_records = true
+            active_record.run_after_transaction_callbacks_in_order_defined = true
           end
 
           if respond_to?(:action_dispatch)

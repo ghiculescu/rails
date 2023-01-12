@@ -1,3 +1,22 @@
+*   `after_commit` callbacks defined on models now execute in the correct order.
+
+    ```ruby
+    class User < ActiveRecord::Base
+      after_commit { puts("this gets called first") }
+      after_commit { puts("this gets called second") }
+    end
+    ```
+
+    Previously, the callbacks executed in the reverse order. To opt in to the new behaviour:
+
+    ```ruby
+    config.active_record.run_after_transaction_callbacks_in_order_defined = true
+    ```
+
+    This is the default for new apps.
+
+    *Alex Ghiculescu*
+
 *   Add `#regroup` query method as a short-hand for `.unscope(:group).group(fields)`
 
     Example:
@@ -15,7 +34,6 @@
     Example: `enable_extension('heroku_ext.hstore')`
 
     *Leonardo Luarte*
-
 
 *   `ActiveRecord::Relation`’s `#any?`, `#none?`, and `#one?` methods take an optional pattern
     argument, more closely matching their `Enumerable` equivalents.
