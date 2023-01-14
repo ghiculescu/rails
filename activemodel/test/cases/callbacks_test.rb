@@ -22,6 +22,7 @@ class CallbacksTest < ActiveModel::TestCase
     define_model_callbacks :empty,      only: []
 
     before_create :before_create
+    before_create proc { |model| model.callbacks << :before_create_prepend }, prepend: true
     around_create CallbackValidator.new
 
     after_create do |model|
@@ -30,6 +31,7 @@ class CallbacksTest < ActiveModel::TestCase
     end
 
     after_create { |model| model.callbacks << :final_callback }
+    after_create proc { |model| model.callbacks << :after_create_prepend }, prepend: true
 
     def initialize(options = {})
       @callbacks = []
@@ -55,8 +57,9 @@ class CallbacksTest < ActiveModel::TestCase
   test "complete callback chain" do
     model = ModelCallbacks.new
     model.create
-    assert_equal model.callbacks, [ :before_create, :before_around_create, :create,
-                                    :after_around_create, :after_create, :final_callback]
+    assert_equal model.callbacks, [ :before_create_prepend, :before_create,
+                                    :before_around_create, :create, :after_around_create,
+                                    :after_create_prepend, :after_create, :final_callback]
   end
 
   test "the callback chain is not halted when around or after callbacks return false" do

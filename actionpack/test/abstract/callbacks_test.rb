@@ -114,6 +114,53 @@ module AbstractController
       end
     end
 
+    class Callback4 < ControllerWithCallbacks
+      after_action :one
+      after_action :two
+      prepend_after_action :three
+
+      def one
+        @values << "1"
+      end
+
+      def two
+        @values << "2"
+      end
+
+      def three
+        @values << "3"
+      end
+
+      def index
+        @values = []
+      end
+    end
+
+    class Callback4Subclass < Callback4
+      after_action :four
+
+      def four
+        @values << "4"
+      end
+    end
+
+    class TestCallbacks4 < ActiveSupport::TestCase
+      def setup
+        @controller = Callback4.new
+      end
+
+      test "after_action order is correct" do
+        @controller.process(:index)
+        assert_equal ["3", "2", "1"], @controller.instance_variable_get("@values")
+      end
+
+      test "after_action order is correct with subclass" do
+        @controller = Callback4Subclass.new
+        @controller.process(:index)
+        assert_equal ["4", "3", "2", "1"], @controller.instance_variable_get("@values")
+      end
+    end
+
     class CallbacksWithConditions < ControllerWithCallbacks
       before_action :list, only: :index
       before_action :authenticate, except: :index
