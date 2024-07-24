@@ -163,6 +163,23 @@ class ActiveStorage::AttachmentTest < ActiveSupport::TestCase
     assert_nothing_raised { ActiveStorage::Attachment.create!(name: "whatever", record: @user, blob: create_blob) }
   end
 
+  test "getting a signed blob ID from an attachment with a different record" do
+    blob1 = create_blob
+    blob2 = create_blob
+    @user.avatar.attach(blob1)
+    user2 = User.create!(name: "Alex")
+    user2.avatar.attach(blob2)
+
+    signed_id = @user.avatar.signed_id
+    assert_equal blob1, ActiveStorage::Blob.find_signed(signed_id, record: @user)
+    assert_nil ActiveStorage::Blob.find_signed(signed_id, record: user2)
+
+    assert_equal blob1, ActiveStorage::Blob.find_signed!(signed_id, record: @user)
+    assert_raises ActiveSupport::MessageVerifier::InvalidSignature do
+      ActiveStorage::Blob.find_signed!(signed_id, record: user2)
+    end
+  end
+
   private
     def assert_blob_identified_before_owner_validated(owner, blob, content_type)
       validated_content_type = nil

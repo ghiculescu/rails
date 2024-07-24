@@ -67,7 +67,9 @@ class ActiveStorage::Blob < ActiveStorage::Record
     #
     # The signed ID is also used to create stable URLs for the blob through the BlobsController.
     def find_signed(id, record: nil, purpose: :blob_id)
-      super(id, purpose: purpose)
+      signed = super(id, purpose: purpose)
+      signed = nil if record && signed.attachments.map(&:record).exclude?(record)
+      signed
     end
 
     # Works like +find_signed+, but will raise an +ActiveSupport::MessageVerifier::InvalidSignature+
@@ -75,7 +77,9 @@ class ActiveStorage::Blob < ActiveStorage::Record
     # or has been tampered with. It will also raise an +ActiveRecord::RecordNotFound+ exception if
     # the valid signed id can't find a record.
     def find_signed!(id, record: nil, purpose: :blob_id)
-      super(id, purpose: purpose)
+      super(id, purpose: purpose).tap do |signed|
+        raise ActiveSupport::MessageVerifier::InvalidSignature if record && signed.attachments.map(&:record).exclude?(record)
+      end
     end
 
     def build_after_unfurling(key: nil, io:, filename:, content_type: nil, metadata: nil, service_name: nil, identify: true, record: nil) # :nodoc:
