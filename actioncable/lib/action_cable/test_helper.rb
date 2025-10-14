@@ -9,7 +9,7 @@ module ActionCable
       server = ActionCable.server
       test_adapter = ActionCable::SubscriptionAdapter::Test.new(server)
 
-      @old_pubsub_adapter = server.pubsub
+      @old_pubsub_adapter = server.pubsub rescue nil
 
       server.instance_variable_set(:@pubsub, test_adapter)
       super
